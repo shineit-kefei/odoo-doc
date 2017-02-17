@@ -4,79 +4,66 @@
 
 
 ===================
-Translating Modules
+翻译模块
 ===================
 
-Exporting translatable term
-===========================
+导出可翻译术语
+==============
 
-A number of terms in your modules are "implicitly translatable" as a result,
-even if you haven't done any specific work towards translation you can export
-your module's translatable terms and may find content to work with.
+由于您的模块中的许多术语都是“可隐式翻译”的，即使您没有对翻译进行任何具体工作，
+也可以导出模块的可翻译术语，并找到要使用的内容。
 
 .. todo:: needs technical features
 
-Translations export is performed via the administration interface by logging into
-the backend interface and opening :menuselection:`Settings --> Translations
---> Import / Export --> Export Translations`
+翻译导出通过管理界面通过登录到后端接口并打开 :menuselection:`设置 ->翻译 ->导入/导出 ->导出翻译`
 
-* leave the language to the default (new language/empty template)
-* select the `PO File`_ format
-* select your module
-* click :guilabel:`Export` and download the file
+* 将语言保留为默认语言（新语言/空模板）
+* 选择 `PO 文件`_ 格式
+* 选择你的模块
+* 点击 :guilabel:`导出` 并且下载文件
 
 .. image:: translations/po-export.*
     :align: center
     :width: 75%
 
-This gives you a file called :file:`{yourmodule}.pot` which should be moved to
-the :file:`{yourmodule}/i18n/` directory. The file is a *PO Template* which
-simply lists translatable strings and from which actual translations (PO files)
-can be created. PO files can be created using msginit_, with a dedicated
-translation tool like POEdit_ or by simply copying the template to a new file
-called :file:`{language}.po`. Translation files should be put in
-:file:`{yourmodule}/i18n/`, next to :file:`{yourmodule}.pot`, and will be
-automatically loaded by Odoo when the corresponding language is installed (via
-:menuselection:`Settings --> Translations --> Load a Translation`)
+这给你一个文件叫做 :file:`{yourmodule}.pot` ，它应该被移动到 :file:`{yourmodule}/i18n/` 目录下。 
+该文件是一个 *PO模板* ，它只是列出可翻译字符串，从中可以创建实际的翻译（PO文件）。 可以使用 msginit_ ，
+使用专用翻译工具（如 POEdit_）创建PO文件，或者通过将模板复制到名为 :file:`{language}.po` 的新文件中来创建。
+翻译文件应放在 :file:`{yourmodule}/i18n/` ，旁边 :file:`{yourmodule}.pot` ，
+在安装相应语言时由Odoo自动加载（通过 :menuselection:`设置 ->翻译 ->加载翻译` ）
 
-.. note:: translations for all loaded languages are also installed or updated
-          when installing or updating a module
+.. note:: 在安装或更新模块时，也会安装或更新所有加载语言的翻译
 
-Implicit exports
+隐性出口
 ================
 
-Odoo automatically exports translatable strings from "data"-type content:
+Odoo自动从“data”类型的内容中导出可翻译字符串：
 
-* in non-QWeb views, all text nodes are exported as well as the content of
-  the ``string``, ``help``, ``sum``, ``confirm`` and ``placeholder``
-  attributes
-* QWeb templates (both server-side and client-side), all text nodes are
-  exported except inside ``t-translation="off"`` blocks, the content of the
-  ``title``, ``alt``, ``label`` and ``placeholder`` attributes are also
-  exported
-* for :class:`~odoo.fields.Field`, unless their model is marked with
+* 在非QWeb视图中，所有文本节点以及 ``string``，``help``，``sum``，``confirm``和 ``placeholder`` 
+  属性的内容被导出
+* QWeb模板（服务器端和客户端），除了``t-translation =“off”``块内部，
+  ``title``，``alt``， ``label``和 ``placeholder``属性也被导出
+* 对于 :class:`~odoo.fields.Field`, 除非该的模块被标记为
   ``_translate = False``:
 
-  * their ``string`` and ``help`` attributes are exported
-  * if ``selection`` is present and a list (or tuple), it's exported
-  * if their ``translate`` attribute is set to ``True``, all of their existing
-    values (across all records) are exported
-* help/error messages of :attr:`~odoo.models.Model._constraints` and
-  :attr:`~odoo.models.Model._sql_constraints` are exported
+  * 它的 ``string`` 和 ``help`` 属性被导出
+  * 如果存在 ``selection`` 和一个列表（或元组），它就被导出
+  * 如果它们的 ``translate`` 属性设置为``True``，它们的所有现有值（囊括所有记录）被导出
 
-Explicit exports
+* 帮助/错误消息 :attr:`~odoo.models.Model._constraints` 和 
+  :attr:`~odoo.models.Model._sql_constraints` 被导出
+
+明确出口
 ================
 
-When it comes to more "imperative" situations in Python code or Javascript
-code, Odoo cannot automatically export translatable terms so they
-must be marked explicitly for export. This is done by wrapping a literal
-string in a function call.
+当涉及Python代码或Javascript代码中更多的“命令式”情况时，Odoo不能自动导出可翻译术语，
+因此必须明确标记以便导出。 这通过在函数调用中包装文字字符串来完成。
 
-In Python, the wrapping function is :func:`odoo._`::
+在Python中，包装函数是 :func:`odoo._`::
 
     title = _("Bank Accounts")
 
-In JavaScript, the wrapping function is generally :js:func:`odoo.web._t`:
+在Python中，普遍的包装函数是 :js:func:`odoo.web._t`:
 
 .. code-block:: javascript
 
@@ -84,14 +71,13 @@ In JavaScript, the wrapping function is generally :js:func:`odoo.web._t`:
 
 .. warning::
 
-    Only literal strings can be marked for exports, not expressions or
-    variables. For situations where strings are formatted, this means the
-    format string must be marked, not the formatted string::
+    只有文本字符串可以标记为导出，而不是表达式或变量。 对于字符串格式化的情况，
+    这意味着必须标记格式字符串，而不是格式化的字符串::
 
-        # bad, the extract may work but it will not translate the text correctly
+        # 错误，提取可以工作，但它不会正确翻译文本
         _("Scheduled meeting with %s" % invitee.name)
 
-        # good
+        # 正确
         _("Scheduled meeting with %s") % invitee.name
 
 .. _PO File: http://en.wikipedia.org/wiki/Gettext#Translating

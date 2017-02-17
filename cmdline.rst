@@ -138,23 +138,15 @@ database
 
 .. option:: --db-filter <筛选器>
 
-    hides databases that do not match ``<filter>``. The filter is a
-    `regular expression`_, with the additions that:
     隐藏不匹配<筛选器> 的数据库。过滤器是一种 `正则表达式` ，补充:
-
-    - ``%h`` is replaced by the whole hostname the request is made on.
-    - ``%d`` is replaced by the subdomain the request is made on, with the
-      exception of ``www`` (so domain ``odoo.com`` and ``www.odoo.com`` both
-      match the database ``odoo``)
 
     - ``%h`` 被请求的整个主机名替换
     - ``%d`` 被替换为请求中除www以外的子域名(因此域odoo.com和www.odoo.com都将匹配odoo数据库)
 
 .. option:: --db-template <模板>
 
-    when creating new databases from the database-management screens, use the
-    specified `template database`_. Defaults to ``template1``.
-    当从数据库管理界面创建一个新的数据库，使用指定的 `template database` 。 默认是 ``template1`` 。
+    当从数据库管理界面创建一个新的数据库，使用指定的 `template database` 。 
+    默认是 ``template1`` 。
 
 built-in HTTP
 -------------
