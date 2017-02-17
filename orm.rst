@@ -774,13 +774,11 @@ Method decorators
 .. _reference/orm/fields/basic:
 
 基础字段
-------------
+--------
 
-.. autodoc documents descriptors as attributes, even for the *definition* of
-   descriptors. As a result automodule:: odoo.fields lists all the field
-   classes as attributes without providing inheritance info or methods (though
-   we don't document methods as they're not useful for "external" devs)
-   (because we don't support pluggable field types) (or do we?)
+.. autodoc将描述符文档作为属性，甚至用于描述符 *定义*。 因此，
+   automodule:: odoo.fields 将所有字段类列为属性，而不提供继承信息或方法
+   （我们不记录方法，因为它们对“外部”开发人员无用）（因为我们不支持可插入字段类型）
 
 .. autoclass:: odoo.fields.Field
 
@@ -815,7 +813,7 @@ Method decorators
 
 .. _reference/orm/fields/relational:
 
-Relational fields
+关联字段
 -----------------
 
 .. autoclass:: odoo.fields.Many2one
@@ -832,30 +830,27 @@ Relational fields
 
 .. _reference/orm/inheritance:
 
-Inheritance and extension
+继承和扩展
 =========================
 
 Odoo provides three different mechanisms to extend models in a modular way:
 
-Odoo提供三种不同以模块化扩展模块的机制
+Odoo提供三种不同以模块化方式扩展模型
 
-* creating a new model from an existing one, adding new information to the
-  copy but leaving the original module as-is
-* extending models defined in other modules in-place, replacing the previous
-  version
-* delegating some of the model's fields to records it contains
+* 从现有模型创建新模型，向副本添加新信息，但保留原始模模型
+* 扩展其他模块中定义的模型，替换以前的版本
+* 将一些模型的字段委托给它包含的记录
 
 .. image:: ../images/inheritance_methods.png
     :align: center
 
-Classical inheritance
----------------------
+原型继承
+----------
 
-When using the :attr:`~odoo.models.Model._inherit` and
-:attr:`~odoo.models.Model._name` attributes together, Odoo creates a new
-model using the existing one (provided via
-:attr:`~odoo.models.Model._inherit`) as a base. The new model gets all the
-fields, methods and meta-information (defaults & al) from its base.
+当同时使用 :attr:`~odoo.models.Model._inherit` 和 :attr:`~odoo.models.Model._name`
+属性时， Odoo使用现有的模型作为基础来创建一个新的模型（通过提供 :attr:`~odoo.models.Model._inherit`）。
+这个新的模型从基础模型中获取所有的字段，方法和元信息（默认值和al）
+
 
 .. literalinclude:: ../../odoo/addons/test_documentation_examples/inheritance.py
     :language: python
@@ -873,18 +868,16 @@ will yield:
     :language: text
     :lines: 15,22
 
-the second model has inherited from the first model's ``check`` method and its
-``name`` field, but overridden the ``call`` method, as when using standard
-:ref:`Python inheritance <python:tut-inheritance>`.
 
-Extension
+第二个模型继承了第一个模型的``check``方法和``name``字段，但是覆盖了``call``方法，因为当使用标准
+:ref:`Python inheritance <python：tut-inheritance>` 。
+
+扩展继承
 ---------
 
-When using :attr:`~odoo.models.Model._inherit` but leaving out
-:attr:`~odoo.models.Model._name`, the new model replaces the existing one,
-essentially extending it in-place. This is useful to add new fields or methods
-to existing models (created in other modules), or to customize or reconfigure
-them (e.g. to change their default sort order):
+当使用 :attr:`~odoo.models.Model._inherit` 但是没有提供 :attr:`~odoo.models.Model._name` 时，
+新模型替代已存在的模型，本质是在原有模型进行扩展。对于添加新字段或方法是非常有用的，或者去定制或重新配置它们
+（例如 改变它们的默认排序）:
 
 .. literalinclude:: ../../odoo/addons/test_documentation_examples/extension.py
     :language: python
@@ -903,15 +896,13 @@ will yield:
 .. note:: it will also yield the various :ref:`automatic fields
           <reference/orm/model/automatic>` unless they've been disabled
 
-Delegation
-----------
+委托继承
+---------
 
-The third inheritance mechanism provides more flexibility (it can be altered
-at runtime) but less power: using the :attr:`~odoo.models.Model._inherits`
-a model *delegates* the lookup of any field not found on the current model
-to "children" models. The delegation is performed via
-:class:`~odoo.fields.Reference` fields automatically set up on the parent
-model:
+第三种继承机制提供了更多的灵活性（可以改变在运行时）但有较少的功能：
+使用 :attr:`~odoo.models.Model._inherits` 模型*委托*查找当前模型中未找到的任何字段
+到“儿童”模型。委托通过以下方式执行 :class:`~odoo.fields.Reference` 字段在父代上自动设置
+模型：
 
 .. literalinclude:: ../../odoo/addons/test_documentation_examples/delegation.py
     :language: python
@@ -938,93 +929,82 @@ and it's possible to write directly on the delegated field:
 
 .. _reference/orm/domains:
 
-Domains
+Domain
 =======
 
-A domain is a list of criteria, each criterion being a triple (either a
-``list`` or a ``tuple``) of ``(field_name, operator, value)`` where:
+domain是一个标准列表，每个标准是一个三元组（要么是 ``list`` 或是一个 ``tuple``）的
+``(field_name, operator, value)`` :
 
 ``field_name`` (``str``)
-    a field name of the current model, or a relationship traversal through
-    a :class:`~odoo.fields.Many2one` using dot-notation e.g. ``'street'``
-    or ``'partner_id.country'``
+    当前模型的字段名，或者通过 :class: `~odoo.fields.Many2one` 的关系遍历，
+    使用点符号。 ``'street'``或 ``partner_id.country'``
+
 ``operator`` (``str``)
-    an operator used to compare the ``field_name`` with the ``value``. Valid
-    operators are:
+    用于比较 ``field_name`` 和 ``value`` 的操作符。有效的操作符有：
 
     ``=``
-        equals to
+        相等
     ``!=``
-        not equals to
+        不等
     ``>``
-        greater than
+        大于
     ``>=``
-        greater than or equal to
+        不小于
     ``<``
-        less than
+        小于
     ``<=``
-        less than or equal to
+        不大于
     ``=?``
-        unset or equals to (returns true if ``value`` is either ``None`` or
-        ``False``, otherwise behaves like ``=``)
+        未设置或等于(如果``value``为``None``或``False``，则返回真，否则表现为 ``=``)
     ``=like``
-        matches ``field_name`` against the ``value`` pattern. An underscore
-        ``_`` in the pattern stands for (matches) any single character; a
-        percent sign ``%`` matches any string of zero or more characters.
+        匹配``field_name``与``value``模式。 模式中的下划线 “_” 代表任何单个字符（匹配） 
+        百分号“％”匹配任何零个或多个字符的字符串。
     ``like``
-        matches ``field_name`` against the ``%value%`` pattern. Similar to
-        ``=like`` but wraps ``value`` with '%' before matching
+        匹配``field_name``与``value``模式。类似于``= like``，但在匹配之前用“％”包装``value``
     ``not like``
-        doesn't match against the ``%value%`` pattern
+        不匹配``%value%`` 的模式
     ``ilike``
-        case insensitive ``like``
+        等同于不区分大小写的 ``like``
     ``not ilike``
-        case insensitive ``not like``
+        等同于不区分大小写的 ``not like``
     ``=ilike``
-        case insensitive ``=like``
+        等同于不区分大小写的 ``=like``
     ``in``
-        is equal to any of the items from ``value``, ``value`` should be a
-        list of items
+        等于 ``value`` 中的任意一项, ``value`` 应该是一个列表
     ``not in``
-        is unequal to all of the items from ``value``
+        不等于 ``value``中的任意一项
     ``child_of``
-        is a child (descendant) of a ``value`` record.
+        是一个 ``value`` 记录的子节点（子孙）
 
-        Takes the semantics of the model into account (i.e following the
-        relationship field named by
-        :attr:`~odoo.models.Model._parent_name`).
+        采用模型的语义（即关系字段命名为 :attr:`~odoo.models.Model._parent_name` ）。
 
 ``value``
-    variable type, must be comparable (through ``operator``) to the named
-    field
+    变量类型，必须是与命名字段可比的（通过``operator``）
 
-Domain criteria can be combined using logical operators in *prefix* form:
+可以使用 *prefix* 形式的逻辑运算符组合Domain条件
 
 ``'&'``
-    logical *AND*, default operation to combine criteria following one
-    another. Arity 2 (uses the next 2 criteria or combinations).
+    逻辑运算符 *AND* ，组合条件的默认操作。 Arity 2（使用接下来的两个标准或组合）。
+
 ``'|'``
-    logical *OR*, arity 2.
+    逻辑运算符 *OR*, arity 2.
 ``'!'``
-    logical *NOT*, arity 1.
+    逻辑运算符 *NOT*, arity 1.
 
-    .. tip:: Mostly to negate combinations of criteria
-        :class: aphorism
+    .. tip:: 主要是否定标准的组合 :class: aphorism
 
-        Individual criterion generally have a negative form (e.g. ``=`` ->
-        ``!=``, ``<`` -> ``>=``) which is simpler than negating the positive.
+        个别标准通常有一个否定形式（例如``=`` -> ``！=``，``<`` -> ``>=``）比简单的否定更有效
 
 .. admonition:: Example
 
-    To search for partners named *ABC*, from belgium or germany, whose language
-    is not english::
+    要搜索来自比利时或德国且语言不是英语且名为 *ABC* 的合作伙伴::
 
         [('name','=','ABC'),
          ('language.code','!=','en_US'),
          '|',('country_id.code','=','be'),
              ('country_id.code','=','de')]
 
-    This domain is interpreted as:
+    该domain解释为:
 
     .. code-block:: text
 
@@ -1032,84 +1012,58 @@ Domain criteria can be combined using logical operators in *prefix* form:
         AND (language is NOT english)
         AND (country is Belgium OR Germany)
 
-Porting from the old API to the new API
-=======================================
+从旧API移植到新API
+===================
 
-* bare lists of ids are to be avoided in the new API, use recordsets instead
-* methods still written in the old API should be automatically bridged by the
-  ORM, no need to switch to the old API, just call them as if they were a new
-  API method. See :ref:`reference/orm/oldapi/bridging` for more details.
-* :meth:`~odoo.models.Model.search` returns a recordset, no point in e.g.
-  browsing its result
-* ``fields.related`` and ``fields.function`` are replaced by using a normal
-  field type with either a ``related=`` or a ``compute=`` parameter
-* :func:`~odoo.api.depends` on ``compute=`` methods **must be complete**,
-  it must list **all** the fields and sub-fields which the compute method
-  uses. It is better to have too many dependencies (will recompute the field
-  in cases where that is not needed) than not enough (will forget to recompute
-  the field and then values will be incorrect)
-* **remove** all ``onchange`` methods on computed fields. Computed fields are
-  automatically re-computed when one of their dependencies is changed, and
-  that is used to auto-generate ``onchange`` by the client
-* the decorators :func:`~odoo.api.model` and :func:`~odoo.api.multi` are
-  for bridging *when calling from the old API context*, for internal or pure
-  new-api (e.g. compute) they are useless
-* remove :attr:`~odoo.models.Model._default`, replace by ``default=``
-  parameter on corresponding fields
-* if a field's ``string=`` is the titlecased version of the field name::
+* 在新API中要避免使用ids的裸列表，使用记录集替代
+* 仍然写在旧API中的方法应该自动桥接ORM，不需要切换到旧的API，只需调用它们就像是一个新的
+   API方法。 有关更多详细信息，请参见 :ref: `reference/orm/oldapi/bridging` 。
+* :meth:`~odoo.models.Model.search` 返回一个记录集。
+* 通过常规的字段类型 ``related=`` 或 ``compute=`` 参数来替换 
+  ``fields.related`` 和 ``fields.function`` 
+* :func:`~odoo.api.depends` 在 ``compute =`` 方法上 **必须是存在的**，
+  它必须列出 **所有** 计算方法使用的字段和子字段。太多的依赖（在不需要的情况下重新计算字段）比不够
+  （将忘记重新计算字段，然后值将不正确）好
+* 在计算字段上移除 **所有** ``onchange`` 方法。当它的依赖字段改变时计算字段会自动重新计算，
+  并且用于由客户端自动生成 ``onchange``
+* 装饰器 :func:`~odoo.api.model`和 :func:`~odoo.api.multi` 用于桥接 *当从旧的API上下文* 
+  调用时，对于内部或新的api（例如 计算）是无用的
+* 移除 :attr:`~odoo.models.Model._default`, 在对应字段上用 ``default=`` 替代
+* 如果一个字段的 ``string =`` 是字段名的首字母大写的版本::
 
     name = fields.Char(string="Name")
 
-  it is useless and should be removed
-* the ``multi=`` parameter does not do anything on new API fields use the same
-  ``compute=`` methods on all relevant fields for the same result
-* provide ``compute=``, ``inverse=`` and ``search=`` methods by name (as a
-  string), this makes them overridable (removes the need for an intermediate
-  "trampoline" function)
-* double check that all fields and methods have different names, there is no
-  warning in case of collision (because Python handles it before Odoo sees
-  anything)
-* the normal new-api import is ``from odoo import fields, models``. If
-  compatibility decorators are necessary, use ``from odoo import api,
-  fields, models``
-* avoid the :func:`~odoo.api.one` decorator, it probably does not do what
-  you expect
-* remove explicit definition of :attr:`~odoo.models.Model.create_uid`,
+  那是没有什么作用的，应该被移除
+* ``multi =``参数在新的API字段上不做任何事情，使用相同的`compute =``方法在所有相关字段上得到相同结果
+* 通过名称（一个字符串）提供 ``compute =``，``inverse =`` 和 ``search =`` 方法，这使得它们可以重写
+  （不需要中间“跳转”函数）
+* 双重检查所有字段和方法有不同的名称，在碰撞情况下没有警告（因为Python在Odoo看到任何东西之前处理它）
+* 正常的新api导入是``from odoo import fields，models``。 如果兼容性装饰器是必要的，
+  使用``from odoo import api，fields，models``
+* 避免使用 :func:`~odoo.api.one` 装饰器, 它有可能执行你不期望的事
+* 删除显示定义的 :attr:`~odoo.models.Model.create_uid`,
   :attr:`~odoo.models.Model.create_date`,
-  :attr:`~odoo.models.Model.write_uid` and
-  :attr:`~odoo.models.Model.write_date` fields: they are now created as
-  regular "legitimate" fields, and can be read and written like any other
-  field out-of-the-box
-* when straight conversion is impossible (semantics can not be bridged) or the
-  "old API" version is not desirable and could be improved for the new API, it
-  is possible to use completely different "old API" and "new API"
-  implementations for the same method name using :func:`~odoo.api.v7` and
-  :func:`~odoo.api.v8`. The method should first be defined using the
-  old-API style and decorated with :func:`~odoo.api.v7`, it should then be
-  re-defined using the exact same name but the new-API style and decorated
-  with :func:`~odoo.api.v8`. Calls from an old-API context will be
-  dispatched to the first implementation and calls from a new-API context will
-  be dispatched to the second implementation. One implementation can call (and
-  frequently does) call the other by switching context.
+  :attr:`~odoo.models.Model.write_uid` 和
+  :attr:`~odoo.models.Model.write_date` 字段: 它们现在被创建为常规的“合法”字段，并且可以
+  像任何其他字段一样读写
 
-  .. danger:: using these decorators makes methods extremely difficult to
-              override and harder to understand and document
-* uses of :attr:`~odoo.models.Model._columns` or
-  :attr:`~odoo.models.Model._all_columns` should be replaced by
-  :attr:`~odoo.models.Model._fields`, which provides access to instances of
-  new-style :class:`odoo.fields.Field` instances (rather than old-style
-  :class:`odoo.osv.fields._column`).
+* 当不可能进行直接转换（语义不能被桥接）或“旧API”版本是不可取的并且可以针对新的API进行改进时，
+  可以使用完全不同的“旧API”和“新API”实现相同的方法名使用 :func:`~odoo.api.v7` 和 :func:`~odoo.api.v8` 。 该方法应该首先使用old-API风格定义，并装饰 :func:`~odoo.api.v7` ，然后应该使用完全相同的名称重新定义，
+  但新的API风格和装饰 :func:`~odoo.api.v8` 。 来自旧API上下文的调用将被分派到首要实现，
+  并且来自新API上下文的调用将被分派到次要实现。 一个实现可以通过切换上下文来调用（并且频繁地）调用另一个实现。
 
-  Non-stored computed fields created using the new API style are *not*
-  available in :attr:`~odoo.models.Model._columns` and can only be
-  inspected through :attr:`~odoo.models.Model._fields`
-* reassigning ``self`` in a method is probably unnecessary and may break
-  translation introspection
-* :class:`~odoo.api.Environment` objects rely on some threadlocal state,
-  which has to be set up before using them. It is necessary to do so using the
-  :meth:`odoo.api.Environment.manage` context manager when trying to use
-  the new API in contexts where it hasn't been set up yet, such as new threads
-  or a Python interactive environment::
+  .. danger:: 使用这些装饰器使方法非常难以覆盖和更难以理解和记录
+
+* :attr:`~odoo.models.Model._columns` 或 :attr:`~odoo.models.Model._all_columns` 应该被
+  :attr:`~odoo.models.Model._fields` 所替代, 它提供通过新风格 :class:`odoo.fields.Field` 
+  对实例进行访问（而不是旧风格 :class:`odoo.osv.fields._column` ）
+
+  使用新的API样式创建的非存储计算字段是 *不* 可用于 :attr:`~odoo.models.Model._columns`，
+  只能通过以下方式检查 :attr:`~doo.models.Model._fields`
+* 在方法中重新分配 ``self`` 是非必需的并且有可能破坏翻译自省
+* :class:`~odoo.api.Environment` 对象依赖于一些threadlocal状态，在使用它们之前必须设置它们。
+  有必要使用 :meth:`odoo.api.Environment.manage` 上下文管理器尝试在尚未设置的新环境中使用新API，
+  例如新线程或Python交互式环境::
 
     >>> from odoo import api, modules
     >>> r = modules.registry.RegistryManager.get('test')
@@ -1126,55 +1080,39 @@ Porting from the old API to the new API
 
 .. _reference/orm/oldapi/bridging:
 
-Automatic bridging of old API methods
--------------------------------------
+自动桥接旧API方法
+-------------------
 
-When models are initialized, all methods are automatically scanned and bridged
-if they look like models declared in the old API style. This bridging makes
-them transparently callable from new-API-style methods.
+当模型被初始化时，如果它们看起来像在旧API样式中声明的模型，则所有方法都被自动扫描和桥接。 
+这种桥接使得它们可以从新的API样式方法中透明地调用。
 
-Methods are matched as "old-API style" if their second positional parameter
-(after ``self``) is called either ``cr`` or ``cursor``. The system also
-recognizes the third positional parameter being called ``uid`` or ``user`` and
-the fourth being called ``id`` or ``ids``. It also recognizes the presence of
-any parameter called ``context``.
+如果被调用的第二个位置参数是 ``cr`` 或 ``cursor``，则被匹配为旧API风格的方法。该系统也会辨别
+第三个位置参数被称为 ``uid`` 或 ``user`` 和 第四个位置参数被称为 ``id`` 或 ``ids`` 。它也会辨别
+任意被命名为 ``context`` 参数的存在。
 
-When calling such methods from a new API context, the system will
-automatically fill matched parameters from the current
-:class:`~odoo.api.Environment` (for :attr:`~odoo.api.Environment.cr`,
-:attr:`~odoo.api.Environment.user` and
-:attr:`~odoo.api.Environment.context`) or the current recordset (for ``id``
-and ``ids``).
+当从一个新API上下文调用这样的方法时，系统会自动从当前环境 :class:`~odoo.api.Environment` 
+调用(:attr:`~odoo.api.Environment.cr` ， :attr:`~odoo.api.Environment.user` 和
+:attr:`~odoo.api.Environment.context`) 或者当前的记录集 (for ``id``
+and ``ids``)。
 
-In the rare cases where it is necessary, the bridging can be customized by
-decorating the old-style method:
+在极少数需要的情况下，桥接可以通过装饰旧式方法来定制：
 
-* disabling it entirely, by decorating a method with
-  :func:`~odoo.api.noguess` there will be no bridging and methods will be
-  called the exact same way from the new and old API styles
-* defining the bridge explicitly, this is mostly for methods which are matched
-  incorrectly (because parameters are named in unexpected ways):
+* 完全禁用它，通过装饰一个方法
+  :func:`~odoo.api.noguess` 这将不会有桥接并且方法将以准确的方式从新和旧的API风格调用
+* 显式地定义桥接，这主要是对于不正确匹配的方法（因为参数以意想不到的方式命名）：
 
   :func:`~odoo.api.cr`
-     will automatically prepend the current cursor to explicitly provided
-     parameters, positionally
+     将自动地将当前游标添加到显式提供的参数位置
   :func:`~odoo.api.cr_uid`
-     will automatically prepend the current cursor and user's id to explictly
-     provided parameters
+     将自动地将当前游标和用户id添加到显式提供的参数位置
   :func:`~odoo.api.cr_uid_ids`
-     will automatically prepend the current cursor, user's id and recordset's
-     ids to explicitly provided parameters
+     将自动地将当前游标、用户id和记录集的ids添加到显式提供的参数位置
   :func:`~odoo.api.cr_uid_id`
-     will loop over the current recordset and call the method once for each
-     record, prepending the current cursor, user's id and record's id to
-     explicitly provided parameters.
+    将循环当前记录集，并为每个记录调用该方法一次，将当前游标，用户id和记录id添加到显式提供的参数位置。
 
-     .. danger:: the result of this wrapper is *always a list* when calling
-                 from a new-API context
+     .. danger:: 当从一个新的API上下文调用时，这个包装器的结果是 *总是一个列表*
 
-  All of these methods have a ``_context``-suffixed version
-  (e.g. :func:`~odoo.api.cr_uid_context`) which also passes the current
-  context *by keyword*.
-* dual implementations using :func:`~odoo.api.v7` and
-  :func:`~odoo.api.v8` will be ignored as they provide their own "bridging"
+  所有这些方法都有一个`_context``后缀版本（例如 :func:`~odoo.api.cr_uid_context`），它也通过关键字 *传递当前上下文* 。
+
+* 双重实现使用 :func:`~odoo.api.v7` 和 :func:`~odoo.api.v8` 将被忽略，因为他们提供自己的“桥接”
 
