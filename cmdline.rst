@@ -153,53 +153,50 @@ built-in HTTP
 
 .. option:: --no-xmlrpc
 
-    do not start the HTTP or long-polling workers (may still start cron
-    workers)
+   不要启动HTTP或长轮询工作（可能仍启动cron工作）
 
     .. warning:: has no effect if :option:`--test-enable` is set, as tests
                  require an accessible HTTP server
 
+    .. warning:: 如果设置了 :option:`--test-enable` ，则没有效果，
+                 因为测试需要一个可访问的HTTP服务器
+
 .. option:: --xmlrpc-interface <interface>
 
-    TCP/IP address on which the HTTP server listens, defaults to ``0.0.0.0``
-    (all addresses)
+    HTTP服务器监听的TCP/IP地址，默认为 ``0.0.0.0``（所有地址）
 
 .. option:: --xmlrpc-port <port>
 
-    Port on which the HTTP server listens, defaults to 8069.
+    HTTP服务器监听的端口，默认是8069
 
 .. option:: --longpolling-port <port>
 
-    TCP port for long-polling connections in multiprocessing or gevent mode,
-    defaults to 8072. Not used in default (threaded) mode.
+    用于多进程或gevent模式下长轮询连接的TCP端口，默认为8072.默认（线程）模式下不使用。
 
-logging
+日志
 -------
 
-By default, Odoo displays all logging of level_ ``info`` except for workflow
-logging (``warning`` only), and log output is sent to ``stdout``. Various
-options are available to redirect logging to other destinations and to
-customize the amount of logging output
+默认情况下，Odoo显示 level_ ``info`` 的所有了工作流日志记录（仅``warning``）日志记录，
+并且日志输出发送到 ``stdout`` 。各种选项可用于将日志重定向到其他目的地并自定义日志输出量
 
 .. option:: --logfile <file>
 
-    sends logging output to the specified file instead of stdout. On Unix, the
-    file `can be managed by external log rotation programs
-    <https://docs.python.org/2/library/logging.handlers.html#watchedfilehandler>`_
-    and will automatically be reopened when replaced
+    将日志输出发送到指定的文件，而不是stdout。 在Unix上，
+    文件 `可以由外部日志循环程序管理<https://docs.python.org/2/library/logging.handlers.html#watchedfilehandler>` ，并且在替换时将自动重新打开
 
 .. option:: --logrotate
 
-    enables `log rotation <https://docs.python.org/2/library/logging.handlers.html#timedrotatingfilehandler>`_
-    daily, keeping 30 backups. Log rotation frequency and number of backups is
-    not configurable.
+    启用 `日志循环 <https://docs.python.org/2/library/logging.handlers.html
+    #timedrotatingfilehandler>`_ daily，保留30个备份。 日志循环频率和备份数量不可配置。
 
 .. option:: --syslog
 
     logs to the system's event logger: `syslog on unices <https://docs.python.org/2/library/logging.handlers.html#sysloghandler>`_
     and `the Event Log on Windows <https://docs.python.org/2/library/logging.handlers.html#nteventloghandler>`_.
 
-    Neither is configurable
+    日志到系统的事件记录器：`系统日志的Unix系统 <https://docs.python.org/2/library/logging.handlers.html#sysloghandler>` 和 `Windows上的事件日志<https://docs.python.org/2/library/logging.handlers.html#nteventloghandler>`_ 。
+
+    两者都不可配置
 
 .. option:: --log-db <dbname>
 
@@ -207,41 +204,40 @@ customize the amount of logging output
     database. The database can be the name of a database in the "current"
     PostgreSQL, or `a PostgreSQL URI`_ for e.g. log aggregation
 
+    日志到指定数据库的``ir.logging``模型（``ir_logging``表）。 
+    数据库可以是“当前”PostgreSQL中的数据库的名称，或者例如 `PostgreSQL URI` 。 例如 日志聚合
+
 .. option:: --log-handler <handler-spec>
 
-    :samp:`{LOGGER}:{LEVEL}`, enables ``LOGGER`` at the provided ``LEVEL``
-    e.g. ``odoo.models:DEBUG`` will enable all logging messages at or above
-    ``DEBUG`` level in the models.
 
-    * The colon ``:`` is mandatory
-    * The logger can be omitted to configure the root (default) handler
-    * If the level is omitted, the logger is set to ``INFO``
+    :samp:`{LOGGER}:{LEVEL}` ，在提供 ``LEVE`` 下启用 ``LOGGER`` 。 
+    ``odoo.models:DEBUG`` 将在模型中启用 ``DEBUG`` 级别的所有日志消息。
 
-    The option can be repeated to configure multiple loggers e.g.
+    * 冒号 ``:`` 是必须的
+    * 可以省略记录器来配置根处理程序
+    * 如果级别被省略，则设置为 ``INFO``
 
-    .. code-block:: console
+    可以重复该选项以配置多个记录器 例如
+
+    .. code-block:: 控制台
 
         $ odoo-bin --log-handler :DEBUG --log-handler werkzeug:CRITICAL --log-handler odoo.fields:WARNING
 
 .. option:: --log-request
 
-    enable DEBUG logging for RPC requests, equivalent to
-    ``--log-handler=odoo.http.rpc.request:DEBUG``
+    对RPC请求启用DEBUG日志记录，等效于 ``--log-handler=odoo.http.rpc.request:DEBUG``
 
 .. option:: --log-response
 
-    enable DEBUG logging for RPC responses, equivalent to
-    ``--log-handler=odoo.http.rpc.response:DEBUG``
+    为RPC响应启用DEBUG日志记录，等效于 ``--log-handler=odoo.http.rpc.response:DEBUG``
 
 .. option:: --log-web
 
-    enables DEBUG logging of HTTP requests and responses, equivalent to
-    ``--log-handler=odoo.http:DEBUG``
+    启用DEBUG日志记录HTTP请求和响应，等效于 `--log-handler=odoo.http:DEBUG``
 
 .. option:: --log-sql
 
-    enables DEBUG logging of SQL querying, equivalent to
-    ``--log-handler=odoo.sql_db:DEBUG``
+    启用SQL查询的DEBUG日志记录，等效于 ``--log-handler=odoo.sql_db:DEBUG``
 
 .. option:: --log-level <level>
 
@@ -250,27 +246,28 @@ customize the amount of logging output
     ``odoo`` and ``werkzeug`` loggers (except for ``debug`` which is only
     set on ``odoo``).
 
-    Odoo also provides debugging pseudo-levels which apply to different sets
-    of loggers:
+    在特定记录器上更容易设置预定义级别的快捷方式。 在 ``odoo`` 和 ``werkzeug`` 记录器上设置 
+    “真正的”级别（``critical``，``error``，``warn``，``debug``），
+    （除了 ``debug``，它只在 ``odoo`` 设置）。
+
+    Odoo还提供了适用于不同记录器集合的调试伪级别：
 
     ``debug_sql``
-        sets the SQL logger to ``debug``
+        将SQL记录器设置为``debug``
 
-        equivalent to ``--log-sql``
+        等效于 ``--log-sql``
     ``debug_rpc``
-        sets the ``odoo`` and HTTP request loggers to ``debug``
+        将 ``odoo`` 和HTTP请求记录器设置为 ``debug``
 
-        equivalent to ``--log-level debug --log-request``
+        等效于 ``--log-level debug --log-request``
     ``debug_rpc_answer``
-        sets the ``odoo`` and HTTP request and response loggers to
-        ``debug``
+        设置``odoo``和HTTP请求和响应记录器 ``debug``
 
-        equivalent to ``--log-level debug --log-request --log-response``
+        等效于 ``--log-level debug --log-request --log-response``
 
     .. note::
 
-        In case of conflict between :option:`--log-level` and
-        :option:`--log-handler`, the latter is used
+        如果 :option:`--log-level` 和 :option:`--log-handler` 发生冲突，后者被使用
 
 
 .. _reference/cmdline/scaffold:
@@ -280,66 +277,54 @@ Scaffolding
 
 .. program:: odoo-bin scaffold
 
-Scaffolding is the automated creation of a skeleton structure to simplify
-bootstrapping (of new modules, in the case of Odoo). While not necessary it
-avoids the tedium of setting up basic structures and looking up what all
-starting requirements are.
+Scaffolding是自动创建的骨架结构，以简化（新模块，在Odoo的情况下）引导。 虽然不必要，但它避免了设置基本结构和查找所有起始要求的烦琐。
 
-Scaffolding is available via the :command:`odoo-bin scaffold` subcommand.
+Scaffolding可通过 :command:`odoo-bin scaffold` 子命令。
 
 .. option:: -t <template>
 
-    a template directory, files are passed through jinja2_ then copied to
-    the ``destination`` directory
+    一个模板目录，文件通过jinja2_传递，然后复制到 ``destination`` 目录
 
 .. option:: name
 
-    the name of the module to create, may munged in various manners to
-    generate programmatic names (e.g. module directory name, model names, …)
+    要创建的模块的名称，可以以各种方式来生成程序化名称（例如模块目录名称，型号名称，_）
 
 .. option:: destination
 
-    directory in which to create the new module, defaults to the current
-    directory
+    在哪个目录中创建新模块，默认为当前目录
 
 .. _reference/cmdline/config:
 
-Configuration file
+配置文件
 ==================
 
-Most of the command-line options can also be specified via a configuration
-file. Most of the time, they use similar names with the prefix ``-`` removed
-and other ``-`` are replaced by ``_`` e.g. :option:`--db-template` becomes
-``db_template``.
+大多数命令行选项也可以通过配置文件指定。 大多数时候，他们使用类似的名称，
+前缀 ``-`` 被删除，其他 ``-`` 被替换为 ``_`` 。 :option:`--db-template` 成为 ``db_template`` 。
 
-Some conversions don't match the pattern:
+某些转化与模式不匹配：
 
-* :option:`--db-filter` becomes ``dbfilter``
-* :option:`--no-xmlrpc` corresponds to the ``xmlrpc`` boolean
-* logging presets (all options starting with ``--log-`` except for
-  :option:`--log-handler` and :option:`--log-db`) just add content to
-  ``log_handler``, use that directly in the configuration file
-* :option:`--smtp` is stored as ``smtp_server``
-* :option:`--database` is stored as ``db_name``
-* :option:`--debug` is stored as ``debug_mode`` (a boolean)
-* :option:`--i18n-import` and :option:`--i18n-export` aren't available at all
-  from configuration files
+* :option:`--db-filter` 变成 ``dbfilter``
+* :option:`--no-xmlrpc` 对应于 ``xmlrpc`` 布尔值
+* 记录预设（所有选项以``--log-``开头除了 :option:`--log-handler` 和 :option:`--log-db`）
+  只是直接在配置文件中添加内容到 ``log_handler``  
+* :option:`--smtp` 被存储为 ``smtp_server``
+* :option:`--database` 被存储为 ``db_name``
+* :option:`--debug` 被存储为 ``debug_mode`` (布尔值)
+* :option:`--i18n-import` 和 :option:`--i18n-export` 根本不可用于配置文件
 
-The default configuration file is :file:`{$HOME}/.odoorc` which
-can be overridden using :option:`--config <odoo-bin -c>`. Specifying
-:option:`--save <odoo-bin -s>` will save the current configuration state back
-to that file.
+默认配置文件是 :file:`{$ HOME} /.odoorc` ，可以使用 :option:`--config <odoo-bin -c>` 重写。 
+指定 :option:`--save <odoo-bin -s>` 会将当前配置状态保存回该文件。
 
 .. _jinja2: http://jinja.pocoo.org
-.. _regular expression: https://docs.python.org/2/library/re.html
-.. _password authentication:
+.. _正则表达式: https://docs.python.org/2/library/re.html
+.. _密码认证:
     http://www.postgresql.org/docs/9.3/static/auth-methods.html#AUTH-PASSWORD
-.. _template database:
+.. _数据库模板:
     http://www.postgresql.org/docs/9.3/static/manage-ag-templatedbs.html
-.. _level:
+.. _级别:
     https://docs.python.org/2/library/logging.html#logging.Logger.setLevel
 .. _a PostgreSQL URI:
     http://www.postgresql.org/docs/9.2/static/libpq-connect.html#AEN38208
-.. _Werkzeug's proxy support:
+.. _Werkzeug 代理支持:
     http://werkzeug.pocoo.org/docs/contrib/fixers/#werkzeug.contrib.fixers.ProxyFix
 .. _pyinotify: https://github.com/seb-m/pyinotify/wiki
